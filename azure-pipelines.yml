@@ -1,0 +1,26 @@
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- checkout: self
+  clean: true
+
+- task: NodeTool@0
+  inputs:
+    versionSpec: "20.x"
+  displayName: "Use Node 20"
+
+- script: |
+    npm install
+    npm run build
+  displayName: "Build Next.js"
+
+- task: AzureStaticWebApp@0
+  inputs:
+    app_location: "/"
+    output_location: ".next"
+    skip_app_build: true
+    azure_static_web_apps_api_token: "$(deployment_token)"
